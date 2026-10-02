@@ -1,0 +1,36 @@
+[workspace]
+members = ["crates/astro-engine"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.94"
+repository = "https://github.com/t2-soft/bornsky"
+license = "Apache-2.0"
+# Publishing source on GitHub does not also authorize a crates.io release.
+publish = false
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+vsop87 = "3"
+proptest = "1.4"
+serde_json = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+cast_possible_truncation = "allow"
+module_name_repetitions = "allow"
+dbg_macro = "deny"
+todo = "deny"
+
+# Full VSOP87 series are deliberately retained; optimize numerical tests.
+[profile.dev.package.vsop87]
+opt-level = 3
+
+[profile.test]
+opt-level = 2
