@@ -4,6 +4,22 @@ A small, standalone Rust library for astronomical positions and natal-chart
 geometry. It is the calculation-only portion of Bornsky, prepared for open-source
 use under **Apache-2.0**. No account, API key, database or hosted service is needed.
 
+## Hosted API and partnerships
+
+**A calculation engine written in Rust, delivered through our Cloudflare-based
+partner API.**
+
+Bring astrology into your app or website through Bornsky's commercial hosted
+service. Our partner API provides access to the Rust engine without operating
+your own calculation infrastructure.
+
+- **For developers:** explore the [Developer Studio (preview)](https://bornsky-api-staging.bornsky-cloud.workers.dev/).
+- **For businesses and partners:** [discuss API access and integration](https://bornsky.app/en#api-partnership).
+- **For personal charts and readings:** [visit Bornsky](https://bornsky.app/).
+
+The hosted API, paid services and interpretation catalogs are separate offerings
+and are not included in this Apache-2.0 library.
+
 ## Included
 
 - Sun, Moon and eight planets, plus mean lunar node and mean apogee.
