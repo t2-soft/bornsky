@@ -1,8 +1,22 @@
-# Bornsky calculation foundation
+# Bornsky — Astrology calculation engine in Rust
 
-A small, standalone Rust library for astronomical positions and natal-chart
-geometry. It is the calculation-only portion of Bornsky, prepared for open-source
-use under **Apache-2.0**. No account, API key, database or hosted service is needed.
+A standalone **Rust astrology library** for planetary positions, natal charts
+(birth charts), tropical zodiac signs, house systems and astrological aspects.
+It is Bornsky's calculation foundation, licensed under **Apache-2.0**, with
+inherited third-party notices. No account, API key, database or hosted service
+is needed to run the library.
+
+[Quick start](#run-it) · [Accuracy and limits](docs/accuracy.md) ·
+[Licensing](docs/licensing.md) · [Contributing](CONTRIBUTING.md)
+
+## Choose how to use Bornsky
+
+| Rust calculation library | Hosted astrology API |
+| --- | --- |
+| Run calculations in your own application or infrastructure. | Integrate through Bornsky's commercial partner service. |
+| Numerical positions, houses, angles and aspects. | Hosted calculations and separately offered paid capabilities. |
+| You supply time conversion and geographic coordinates. | Explore available endpoints and access in the Developer Studio. |
+| [Run the example](#run-it). | [Open Developer Studio (preview)](https://bornsky-api-staging.bornsky-cloud.workers.dev/). |
 
 ## Hosted API and partnerships
 
@@ -22,7 +36,8 @@ and are not included in this Apache-2.0 library.
 
 ## Included
 
-- Sun, Moon and eight planets, plus mean lunar node and mean apogee.
+- Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto,
+  plus mean lunar node and mean apogee.
 - VSOP87D planetary positions, light-time and apparent-position reductions.
 - Lunar/Pluto series, IAU 2000B nutation and IAU 2006 precession/obliquity.
 - Julian Day arithmetic, sidereal time and coordinate transformations.
@@ -54,6 +69,11 @@ cargo doc --workspace --no-deps --locked
 
 The example prints a synthetic natal chart as JSON. Use the crate from this
 workspace or a pinned Git revision; it is not published on crates.io.
+
+The result contains body longitudes, latitudes, distances, zodiac signs,
+retrograde flags and house numbers; twelve house cusps, Ascendant and Midheaven;
+detected aspects; and the supplied time correction. Unavailable bodies and house
+system fallbacks are explicit. This is numerical chart data, not a written reading.
 
 ```rust
 use astro_engine::chart::{natal_chart, BirthData};
@@ -90,9 +110,23 @@ functions expect valid finite inputs in their documented units.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), the [export boundary](docs/export-boundary.md)
 and [third-party notices](THIRD_PARTY_NOTICES.md). Original code is Apache-2.0;
-third-party portions retain their own notices. The license allows commercial
-reuse of this calculation code and does not grant rights to excluded private
-software, catalogs or Bornsky trademarks.
+third-party portions retain their own notices. **Commercial use, modification
+and redistribution of the public calculation code are permitted**, including
+use in proprietary applications and competing hosted services, subject to the
+applicable licence conditions. You do not need a Bornsky subscription to use it.
 
-This repository is being prepared privately. Making it public is a separate
-owner-controlled release step; see the [release checklist](docs/release-checklist.md).
+The licence does not grant access to Bornsky's separate service code, catalogs,
+accounts or paid API, or trademark rights beyond the licence's attribution
+allowance. See [licensing and commercial boundaries](docs/licensing.md).
+
+## Support
+
+For reproducible calculation bugs or library questions, [open a GitHub issue](https://github.com/t2-soft/bornsky/issues)
+with synthetic inputs, the library revision and expected numerical results.
+For hosted API access and partnerships, [contact Bornsky](https://bornsky.app/en#api-partnership).
+See [SECURITY.md](SECURITY.md) for sensitive reports. Community support carries
+no response-time or service-level commitment.
+
+Maintainers: follow the [release checklist](docs/release-checklist.md) before
+changing visibility or publishing a package. GitHub source availability and a
+crates.io package release are separate steps.

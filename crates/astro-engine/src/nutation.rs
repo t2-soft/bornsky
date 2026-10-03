@@ -3,8 +3,8 @@
 //! Nutation: the **IAU 2000B** model (`McCarthy & Luzum 2003`, Cel. Mech.
 //! Dyn. Astron. 85, 37) — the 77-term luni-solar series plus the fixed
 //! planetary-bias offsets, ported from ERFA 2.0.x `eraNut00b` (BSD-style
-//! license; ERFA is the IAU SOFA reference implementation relicensed for
-//! open use) and CI-checked against the ERFA test vector. Pole accurate
+//! license; ERFA is derived from SOFA, not the SOFA reference implementation)
+//! and CI-checked against the ERFA test vector. Pole accurate
 //! to 1 mas over 1900–2100 (the full 2000A
 //! model's remaining ~1 mas would be invisible at chart scale).
 //!
@@ -15,6 +15,8 @@
 //! Meeus example 22.a is kept as a golden with a tolerance wide enough
 //! for the difference from the older IAU 1980 model (approximately 10 mas).
 //! ERFA attribution and redistribution terms are in `THIRD_PARTY_NOTICES.md`.
+//! Adapted to Rust and degree-based inputs/outputs from ERFA v2.0.1.
+//! Copyright (C) 2013-2021 `NumFOCUS` Foundation; retain `licenses/ERFA.txt`.
 
 use crate::time::J2000;
 

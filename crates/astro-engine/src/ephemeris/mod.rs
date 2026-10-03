@@ -58,7 +58,8 @@ pub fn apparent(body: Body, jd_tt: f64) -> Option<EclipticPos> {
 /// Ecliptic-longitude speed in degrees/day (central difference, with a
 /// one-sided fallback when a probe point falls outside a body's validity
 /// span — e.g. within 0.05 days of Pluto's 1885/2099 gate — so a body
-/// that is available at `jd_tt` always gets a real speed, boundary regression fix). Positive = direct, negative = retrograde.
+/// that is available at `jd_tt` still gets a speed. Positive = direct,
+/// negative = retrograde.
 #[must_use]
 pub fn longitude_speed(body: Body, jd_tt: f64) -> Option<f64> {
     longitude_speed_from(body, jd_tt, apparent(body, jd_tt)?)

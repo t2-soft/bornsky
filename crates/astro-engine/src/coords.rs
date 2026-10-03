@@ -5,6 +5,8 @@
 //! Spherical transforms from Meeus, *Astronomical Algorithms* (2nd ed.),
 //! ch. 13, with the book's worked examples as golden tests; precession is
 //! the IAU 2006 model (see below) with ERFA test vectors as goldens.
+//! Precession routines adapted to Rust from ERFA v2.0.1.
+//! Copyright (C) 2013-2021 `NumFOCUS` Foundation; retain `licenses/ERFA.txt`.
 
 use crate::angle::normalize_deg;
 
@@ -69,8 +71,7 @@ pub fn equatorial_to_horizontal(
 // Wallace & Chapront 2003 as adopted by the IAU), ported from ERFA
 // 2.0.x `eraPfw06`/`eraFw2m`/`eraPmat06` and CI-checked against the
 // ERFA test vectors. The matrix carries frame bias (GCRS → J2000,
-// ≈23 mas) with it — correct for the ICRS star catalog and far below
-// chart resolution everywhere else.
+// ≈23 mas) with it, allowing callers to transform ICRS coordinates.
 
 /// The P03 bias+precession angles (γ̄, φ̄, ψ̄, `ε_A`) in radians at a TT JD.
 #[allow(clippy::similar_names)] // gamb/phib/psib ARE the literature's names (ERFA/Hilton 2006)

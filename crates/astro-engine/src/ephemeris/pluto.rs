@@ -4,9 +4,9 @@
 //!
 //! Series error vs the numerical integration it was fitted to: <0.07″
 //! in longitude within its validity span. **Valid 1885–2099 only** —
-//! outside, [`apparent`] returns `None` (hard gate, explicit validity gate;
-//! upgrade path: Kudryavtsev 2009 / TOP2013, or the DE440s backstop).
-//! Coefficient table ported from the MIT-licensed `astro-rust` crate.
+//! outside, [`apparent`] returns `None`. No alternative ephemeris is bundled.
+//! Coefficient table adapted to Rust tuples from MIT-licensed `astro-rust`.
+//! Copyright (c) 2015, 2016 Saurav Sachidanand; retain `licenses/astro-rust.txt`.
 
 use super::{aberration, EclipticPos, LIGHT_TIME_PER_AU};
 use crate::angle::normalize_deg;

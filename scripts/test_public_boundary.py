@@ -1,5 +1,9 @@
 import unittest
-from check_public_boundary import content_errors, dependency_errors
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+from check_public_boundary import content_errors, dependency_errors, history_errors
 
 
 class BoundaryTests(unittest.TestCase):
@@ -15,6 +19,32 @@ class BoundaryTests(unittest.TestCase):
 
     def test_public_scientific_reference_is_allowed(self):
         self.assertEqual(content_errors("docs/accuracy.md", "https://ssd.jpl.nasa.gov/horizons/"), [])
+
+    def test_blocks_local_workspace_and_user_paths(self):
+        for parts, separator in [(("C:", "Users", "Example", "file"), chr(92)),
+                                 (("C:", "astro", "repo"), "/"),
+                                 (("", "home", "example", "file"), "/"),
+                                 (("", "Users", "Example", "file"), "/")]:
+            self.assertTrue(content_errors("README.md", separator.join(parts)))
+
+    def test_history_finds_deleted_secret_without_echoing_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def git(*args):
+                return subprocess.check_output(["git", *args], cwd=root, stderr=subprocess.DEVNULL)
+            git("init")
+            git("config", "user.name", "Synthetic Test")
+            git("config", "user.email", "test@example.invalid")
+            (root / "export-manifest.json").write_text(json.dumps({"files": ["README.md", "export-manifest.json"]}), encoding="utf-8")
+            fake = "ghp_" + "synthetic" * 5
+            (root / "README.md").write_text(fake, encoding="utf-8")
+            git("add", ".")
+            git("commit", "-m", "Synthetic fixture")
+            (root / "README.md").write_text("Clean current contents", encoding="utf-8")
+            git("commit", "-am", "Remove fixture")
+            errors = history_errors(root)
+            self.assertTrue(any("possible credential" in error for error in errors))
+            self.assertNotIn(fake, " ".join(errors))
 
     def test_rejects_dependency_source_and_hidden_build_dependency(self):
         root = {"workspace": {"members": ["crates/astro-engine"], "package": {"publish": False},
