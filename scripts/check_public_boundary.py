@@ -1,6 +1,7 @@
 """Fail closed on unreviewed files/dependencies; never print credential matches."""
 
 from pathlib import Path, PurePosixPath
+import argparse
 import json
 import re
 import subprocess
@@ -19,7 +20,8 @@ SECRET_PATTERNS = [
     re.compile(r"(?:postgres(?:ql)?|mysql)://[^\s/:]+:[^\s@]+@"),
     re.compile(r"eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}"),
 ]
-PRIVATE_SOURCE = re.compile(r"bornsky\.ai|skyborn-api\.fly\.dev|supabase\.co|neon\.tech|(?:C:|/Users/|/home/)[/\\]Users", re.I)
+PRIVATE_SOURCE = re.compile(r"bornsky\.ai|skyborn-api\.fly\.dev|supabase\.co|neon\.tech", re.I)
+LOCAL_PATH = re.compile(r"\b[A-Z]:[/\\](?:Users|astro|my)[/\\]|/(?:Users|home)/[A-Za-z0-9_.-]+/", re.I)
 
 
 def content_errors(name: str, text: str) -> list[str]:
@@ -31,6 +33,8 @@ def content_errors(name: str, text: str) -> list[str]:
         errors.append(f"possible credential in {name} (value redacted)")
     if PRIVATE_SOURCE.search(text):
         errors.append(f"private repository/deployment reference in {name}")
+    if LOCAL_PATH.search(text):
+        errors.append(f"local workspace or user path in {name}")
     return errors
 
 
@@ -108,10 +112,64 @@ def check(root: Path) -> list[str]:
     return errors
 
 
+def history_errors(root: Path) -> list[str]:
+    """Check every reachable commit and blob on locally fetched refs, not reflogs.
+
+    This does not inspect server-side discussions, Actions logs or unfetched refs.
+    Values are never printed. A full clone is required so missing ancestors cannot
+    produce a misleading pass.
+    """
+    def git(*args: str) -> bytes:
+        return subprocess.check_output(["git", *args], cwd=root)
+
+    if git("rev-parse", "--is-shallow-repository").strip() != b"false":
+        return ["history audit requires a full clone; fetch complete history first"]
+    approved = set(json.loads((root / "export-manifest.json").read_text(encoding="utf-8"))["files"])
+    errors = []
+    seen = set()
+    for commit in git("rev-list", "--all").decode().splitlines():
+        message = git("show", "-s", "--format=%B", commit).decode("utf-8", errors="replace")
+        errors += content_errors(f"commit {commit[:12]}", message)
+        for entry in git("ls-tree", "-rz", commit).split(b"\0"):
+            if not entry:
+                continue
+            metadata, raw_name = entry.split(b"\t", 1)
+            mode, kind, oid = metadata.decode().split()
+            name = raw_name.decode("utf-8")
+            key = (mode, oid, name)
+            if key in seen:
+                continue
+            seen.add(key)
+            label = f"{name} at {commit[:12]}"
+            if name not in approved:
+                errors.append(f"unreviewed historical file: {label}")
+            if kind != "blob" or mode not in {"100644", "100755"}:
+                errors.append(f"non-regular historical file: {label}")
+                continue
+            data = git("cat-file", "blob", oid)
+            if len(data) > 300_000:
+                errors.append(f"unexpected large historical file: {label}")
+                continue
+            try:
+                text = data.decode("utf-8")
+            except UnicodeDecodeError:
+                errors.append(f"binary historical file: {label}")
+                continue
+            errors += [f"{error} (history {commit[:12]})" for error in content_errors(name, text)]
+    return errors
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--history", action="store_true", help="also inspect every commit on locally fetched refs")
+    args = parser.parse_args()
     problems = check(ROOT)
+    if args.history:
+        problems += history_errors(ROOT)
     for problem in problems:
         print(problem, file=sys.stderr)
     if problems:
         sys.exit(1)
     print("Public boundary passed: approved files, modules, dependency sources and credential-pattern checks.")
+    if args.history:
+        print("Reachable local-ref history passed; unfetched refs and GitHub discussions/logs require separate review.")

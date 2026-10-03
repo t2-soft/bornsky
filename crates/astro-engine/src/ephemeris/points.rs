@@ -4,8 +4,8 @@
 //! Both are **mean elements** (smooth polynomials of time), quoted per
 //! astrological convention without nutation. The mean-node polynomial is
 //! Meeus ch. 47; the mean-apogee polynomial is the mean-perigee
-//! development + 180° (provisional — flagged in `Body::MeanApogee` docs;
-//! Swiss-fixture validation lands with the golden-fixture tool).
+//! development + 180°. Mean apogee remains provisional: the tests check
+//! its range and motion, not independent positional accuracy.
 
 use super::EclipticPos;
 use crate::angle::normalize_deg;

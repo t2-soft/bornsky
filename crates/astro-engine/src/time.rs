@@ -29,8 +29,9 @@ pub fn jd_supported(jd: f64) -> bool {
 
 /// Converts a proleptic **Gregorian** calendar date to a Julian Day.
 ///
-/// `day` may carry a fractional part (0.5 = noon UT of the previous JD
-/// boundary convention). Month is 1-based (1 = January).
+/// `day` may carry a fractional part: `1.5` means noon on the first day of
+/// the month. Month is 1-based (1 = January). This helper performs calendar
+/// arithmetic only; the caller determines the time scale of the input.
 ///
 /// Algorithm: Meeus, *Astronomical Algorithms* (2nd ed.), ch. 7. Valid
 /// for all Gregorian-calendar dates (the engine's supported span is
@@ -116,10 +117,9 @@ pub fn calendar_from_jd(jd: f64) -> (i32, u8, f64) {
 /// expression accurate across the engine's supported span; the dominant
 /// term advances ~360.9856°/day (one sidereal rotation ≈ 23h56m04s).
 ///
-/// This seeds the sidereal-time layer the house-system math needs
-/// (ASC/MC computation takes local sidereal time = GMST + east
-/// longitude). Apparent sidereal time (GMST + equation of the equinoxes)
-/// lands with the nutation module in Phase 1.
+/// [`crate::chart::natal_chart`] adds the equation of the equinoxes from
+/// [`crate::nutation`] and the observer's east longitude to obtain local
+/// apparent sidereal time for the house angles.
 ///
 /// # Examples
 ///

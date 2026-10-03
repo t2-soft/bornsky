@@ -21,3 +21,13 @@ cargo doc --workspace --no-deps --locked
 Rust is pinned by rust-toolchain.toml; use Python 3.11 or later for the boundary
 check. Contributions to original code are submitted under Apache-2.0. Retain
 inherited notices, and identify the license/provenance of any adapted code.
+
+Submit only work you are authorised to license, including any employer-owned
+contributions. Describe the public numerical reference and the changes made
+when adapting an implementation. See [licensing](docs/licensing.md).
+
+Before release, fetch the repository's branches and tags and run
+`python scripts/check_public_boundary.py --history` in a full clone. A current
+tree check alone cannot find sensitive content deleted in an earlier commit.
+Review pull-request discussions and other GitHub surfaces separately before
+making a previously private repository public.

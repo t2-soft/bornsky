@@ -5,8 +5,9 @@
 //! Accuracy vs the full theory: ≈10″ in longitude, ≈4″ in latitude —
 //! far below chart resolution. Tables ported from the MIT-licensed
 //! `astro-rust` crate (Saurav Sachidanand), which transcribes the same
-//! Meeus tables. Upgrade path: ELP/MPP02 truncated to an explicit error
-//! budget. See `THIRD_PARTY_NOTICES.md` for the inherited table license.
+//! Meeus tables, adapted here to Rust tuples and degree-based calculations.
+//! Copyright (c) 2015, 2016 Saurav Sachidanand; retain `licenses/astro-rust.txt`.
+//! See `THIRD_PARTY_NOTICES.md` for the inherited table license.
 
 use super::{EclipticPos, KM_PER_AU};
 use crate::angle::normalize_deg;

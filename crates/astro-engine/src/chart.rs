@@ -170,8 +170,8 @@ pub fn natal_chart(
     let mut chart_aspects = Vec::new();
     for i in 0..bodies.len() {
         for j in (i + 1)..bodies.len() {
-            // The mean node/apogee are derived points — aspects between
-            // them and each other carry no information.
+            // Chart assembly omits aspects between two derived lunar points.
+            // Call aspects::detect directly if that pair is needed.
             let derived = |b: Body| matches!(b, Body::MeanNode | Body::MeanApogee);
             if derived(bodies[i].body) && derived(bodies[j].body) {
                 continue;
@@ -211,7 +211,7 @@ mod tests {
     use crate::time::julian_day;
 
     fn sample_chart() -> super::Chart {
-        // 1990-06-15 14:30 UT, London (51.5074 N, 0.1278 W).
+        // Synthetic fixture: 1990-06-15 14:30 UT1, London coordinates.
         let jd_ut = julian_day(1990, 6, 15.0) + 14.5 / 24.0;
         natal_chart(
             BirthData {

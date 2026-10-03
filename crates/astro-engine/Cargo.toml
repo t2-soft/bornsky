@@ -1,6 +1,10 @@
 [package]
 name = "astro-engine"
-description = "Bornsky calculation foundation: ephemeris, coordinates, houses, aspects and natal charts"
+description = "Bornsky Rust astrology library: planetary positions, natal charts, houses and aspects"
+homepage = "https://bornsky.app"
+readme = "../../README.md"
+keywords = ["astrology", "astronomy", "ephemeris", "natal-chart", "zodiac"]
+categories = ["science"]
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

@@ -5,7 +5,7 @@
 //! date — Horizons OBSERVER table, `QUANTITIES='2'`, `ANG_FORMAT='DEG'`,
 //! `EXTRA_PREC='YES'`), geocentric (`CENTER='500@399'`), fetched
 //! 2026-08-27 from <https://ssd.jpl.nasa.gov/api/horizons.api>. Epochs
-//! are UT.
+//! are UTC; the fixture-specific offsets below approximate TT for positions.
 //!
 //! The engine computes apparent ecliptic-of-date positions; the test
 //! converts them to RA/Dec with the true obliquity (that conversion is
